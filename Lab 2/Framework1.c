@@ -1,20 +1,31 @@
 #include <fsl_device_registers.h>
 
-void initLED(); void LEDOff(); void LEDOn(); void LEDToggle();
+const int TIMER_LENGTH = 0x01000000;
 
-int main()
+void initLED(void); void LEDOff(void); void LEDOn(void); void LEDToggle(void);
+
+int main(void)
 {
-	PIT->MCR = (1 << 0); // Enable PIT clocks
-	PIT->CHANNEL[0].LDVAL = 0x30000; // set load value of zeroth PIT
-	SIM->SCGC6 = SIM_SCGC6_PIT_MASK; // ENABLE CLOCK TO PIT MODULE
-	// PIT counts down and updates TFLG when it reaches 0
-	// poll TFLG
-	// CHANNEL[0].CVAL
-	
 	initLED();
+	
+	SIM->SCGC6 = SIM_SCGC6_PIT_MASK; // ENABLE CLOCK TO PIT MODULE
+	PIT->MCR &= ~(1 << 1); 					 // Enable PIT clocks (set 1st bit to 0)
+	PIT->CHANNEL[0].LDVAL = TIMER_LENGTH; // set load value of zeroth PIT
+	PIT->CHANNEL[0].TCTRL |= (1 << 0);	// Enable timer
+	PIT->CHANNEL[0].TFLG |= (1 << 0);		// Clear timer done flag
+			
+	while(1)
+	{
+		int x = PIT->CHANNEL[0].CVAL;
+		int y = PIT->CHANNEL[0].TFLG;
+		if ((PIT->CHANNEL[0].TFLG & 1) == 1) 
+		{ 
+			LEDOn(); 
+		}
+	}
 }
 
-void initLED()
+void initLED(void)
 {
 	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
 	PORTB->PCR[22] = PORT_PCR_MUX(001);
@@ -22,20 +33,19 @@ void initLED()
 	LEDOff();
 }
 
-void LEDOff()
+void LEDOff(void)
 {
 	PTB->PCOR &= ~(1 << 22);
 	PTB->PSOR |= (1 << 22);	
 }
 
-void LEDOn()
+void LEDOn(void)
 {
 	PTB->PCOR |= (1 << 22);
 	PTB->PSOR &= ~(1 << 22);
->>>>>>> 795036832904d2de2be094df3744833eb008aca9
 }
 
-void LEDToggle()
+void LEDToggle(void)
 {
 	PTB->PSOR ^= (1 << 22);
 	PTB->PCOR ^= (1 << 22);
