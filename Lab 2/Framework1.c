@@ -1,6 +1,8 @@
 #include <fsl_device_registers.h>
 
-int main (void)
+void initLED(); void LEDOff(); void LEDOn(); void LEDToggle();
+
+int main()
 {
 	PIT->MCR = (1 << 0); // Enable PIT clocks
 	PIT->CHANNEL[0].LDVAL = 0x30000; // set load value of zeroth PIT
@@ -8,4 +10,33 @@ int main (void)
 	// PIT counts down and updates TFLG when it reaches 0
 	// poll TFLG
 	// CHANNEL[0].CVAL
+	
+	initLED();
+}
+
+void initLED()
+{
+	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
+	PORTB->PCR[22] = PORT_PCR_MUX(001);
+	PTB->PDDR |= (1 << 22);
+	LEDOff();
+}
+
+void LEDOff()
+{
+	PTB->PCOR &= ~(1 << 22);
+	PTB->PSOR |= (1 << 22);	
+}
+
+void LEDOn()
+{
+	PTB->PCOR |= (1 << 22);
+	PTB->PSOR &= ~(1 << 22);
+>>>>>>> 795036832904d2de2be094df3744833eb008aca9
+}
+
+void LEDToggle()
+{
+	PTB->PSOR ^= (1 << 22);
+	PTB->PCOR ^= (1 << 22);
 }

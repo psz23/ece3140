@@ -1,7 +1,7 @@
 
 #include <fsl_device_registers.h>
 
-int main()
+/*int main()
 {
 	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK; // Enable the clock to port B
 	
@@ -18,3 +18,4 @@ int main()
 	
 	PTB->PCOR |= (1 << 21);
 }
+*/
