@@ -43,7 +43,7 @@ void PIT0_IRQHandler(void)
 	LEDG_STATUS = ~LEDG_STATUS;
 	setLEDG(LEDG_STATUS);
 	
-	runTimer(0, LEDG_STATUS ? TENTH_SECOND : ONE_SECOND, 1);
+	runTimer(0, LEDG_STATUS ? TENTH_SECOND : ONE_SECOND-TENTH_SECOND, 1);
 }
 
 void initLEDB(void)
