@@ -2,9 +2,12 @@
 
 #define LED_INTERVAL 0x01000000
 
-void initLED(void); void setLED(int);
-
-void initTimers(void); void runTimer(int, int); int checkTimer(int); void resetTimer(int);  
+void initLED(void);
+void setLED(int);
+void initTimers(void);
+void runTimer(int, int);
+int checkTimer(int);
+void resetTimer(int);  
 
 int main(void)
 {
@@ -13,8 +16,10 @@ int main(void)
 	int isOn = 0;
 	
 	while(1) {
-		if (checkTimer(0) == 1) { 
-			setLED(~isOn); isOn = ~isOn; resetTimer(0);
+		if (checkTimer(0)) { 
+			setLED(~isOn); 
+			isOn = ~isOn; 
+			resetTimer(0);
 		}
 	}
 }

@@ -1,8 +1,5 @@
 --cpu=Cortex-M4.fp
-".\objects\framework1.o"
 ".\objects\framework2.o"
-".\objects\tutorial1.o"
-".\objects\tutorial2.o"
 ".\objects\startup.o"
 ".\objects\startup_mk64f12.o"
 ".\objects\system_mk64f12.o"
