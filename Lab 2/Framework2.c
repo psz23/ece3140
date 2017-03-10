@@ -9,7 +9,6 @@
 #define LEDG_PIN 26
 
 void PIT0_IRQHandler(void);
-void PIT1_IRQHandler(void);
 void initLEDB(void); 
 void setLEDB(int);
 void initLEDG(void);
@@ -17,14 +16,15 @@ void setLEDG(int);
 void initPITs(void);
 void runTimer(int, int, int);
 void stopTimer(int);
-void resetTimer(int);  
+void resetTimer(int); 
+
+volatile int LEDG_STATUS = 0;
 
 int main(void)
 {	
 	initLEDB(); initLEDG(); initPITs(); 
 	
 	NVIC_EnableIRQ(PIT0_IRQn); 
-	NVIC_EnableIRQ(PIT1_IRQn); 
 	runTimer(0, ONE_SECOND, 1);
 	
 	int LEDB_STATUS = 0;
@@ -39,15 +39,11 @@ int main(void)
 void PIT0_IRQHandler(void)
 {
 	resetTimer(0); 
-	setLEDG(1); 
 	
-	runTimer(1, TENTH_SECOND, 1);
-}
-
-void PIT1_IRQHandler(void)
-{
-	stopTimer(1);
-	setLEDG(0);
+	LEDG_STATUS = ~LEDG_STATUS;
+	setLEDG(LEDG_STATUS);
+	
+	runTimer(0, LEDG_STATUS ? TENTH_SECOND : ONE_SECOND, 1);
 }
 
 void initLEDB(void)
@@ -86,19 +82,19 @@ void initPITs(void)
 
 void runTimer(int num, int length, int interrupts)
 {
-	PIT->CHANNEL[num].LDVAL = length; 		// set load value of timer
-	PIT->CHANNEL[num].TFLG |= (1 << 0);		// Clear timer done flag
-	PIT->CHANNEL[num].TCTRL |= (1 << 0);	// Enable timer (begin counting)
+	stopTimer(num);
+	PIT->CHANNEL[num].LDVAL = length; 				// set load value of timer
+	PIT->CHANNEL[num].TCTRL |= (1 << 0);			// Enable timer (begin counting)
 	PIT->CHANNEL[num].TCTRL |= (interrupts << 1);	// Enable timer interrupts		
 }
 
 void stopTimer(int num)
-{
+{	
+	PIT->CHANNEL[num].TCTRL &= ~(1 << 0);	// Disable timer (stop counting)	
 	resetTimer(num);
-	PIT->CHANNEL[num].TCTRL &= ~(1 << 0);	// Disable timer
 }
 
 void resetTimer(int num)
 {
-	PIT->CHANNEL[num].TFLG |= (1 << 0);
+	PIT->CHANNEL[num].TFLG |= (1 << 0); 	// Clear timer done flag
 }

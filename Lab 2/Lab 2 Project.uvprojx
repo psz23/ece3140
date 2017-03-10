@@ -380,24 +380,9 @@
           <GroupName>Source Group 1</GroupName>
           <Files>
             <File>
-              <FileName>Framework1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Framework1.c</FilePath>
-            </File>
-            <File>
               <FileName>Framework2.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Framework2.c</FilePath>
-            </File>
-            <File>
-              <FileName>Tutorial1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Tutorial1.c</FilePath>
-            </File>
-            <File>
-              <FileName>Tutorial2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Tutorial2.c</FilePath>
             </File>
           </Files>
         </Group>
