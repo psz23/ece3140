@@ -1,8 +1,9 @@
 #include <fsl_device_registers.h>
 
 // timer clocks run at 20 MHz
-#define LEDB_INTERVAL 0x01312D00 // ~1 second
-#define LEDG_INTERVAL 0x001E8480 // ~0.1 seconds
+#define ONE_SECOND 0x01312D00 // ~1 second
+#define TENTH_SECOND 0x001E8480 // ~0.1 seconds
+#define ADD_CYCLES_FIX 5
 
 #define LEDB_PIN 21
 #define LEDG_PIN 26
@@ -18,8 +19,6 @@ void runTimer(int, int);
 void stopTimer(int);
 void resetTimer(int);  
 
-volatile int LEDBStatus = 0;
-
 int main(void)
 {	
 	initLEDB(); initLEDG(); initPITs(); 
@@ -27,25 +26,23 @@ int main(void)
 	NVIC_EnableIRQ(PIT0_IRQn); 
 	NVIC_EnableIRQ(PIT1_IRQn);
 	
-	runTimer(0, LEDB_INTERVAL);
+	runTimer(0, ONE_SECOND);
 	
-	while(1) { }
+	int LEDB_STATUS = 0;
+	
+	while(1) 
+	{ 
+		int i; for (i = 0; i < ONE_SECOND / ADD_CYCLES_FIX; i++) { }
+		setLEDB(~LEDB_STATUS); LEDB_STATUS = ~LEDB_STATUS;	
+	}
 }
 
 void PIT0_IRQHandler(void)
 {
-	setLEDB(~LEDBStatus); 
-	LEDBStatus = ~LEDBStatus;	
-	resetTimer(0);	
-	
-	setLEDG(1);
-	runTimer(1, LEDG_INTERVAL);
-}
-
-void PIT1_IRQHandler(void)
-{
-	setLEDG(0); 
-	stopTimer(1);
+	resetTimer(0); 
+	setLEDG(1); 
+	int i; for (i = 0; i < TENTH_SECOND / ADD_CYCLES_FIX; i++) { }
+	setLEDG(0);
 }
 
 void initLEDB(void)
