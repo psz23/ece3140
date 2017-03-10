@@ -3,7 +3,7 @@
 // timer clocks run at 20 MHz
 #define ONE_SECOND 0x01312D00 // ~1 second
 #define TENTH_SECOND 0x001E8480 // ~0.1 seconds
-#define ADD_CYCLES_FIX 6
+#define ADD_CYCLES_FIX 5
 
 #define LEDB_PIN 21
 #define LEDG_PIN 26
