@@ -1,6 +1,6 @@
 #include <fsl_device_registers.h>
 
-const int LED_INTERVAL = 0x01000000;
+#define LED_INTERVAL 0x01000000
 
 void initLED(void); void setLED(int);
 
