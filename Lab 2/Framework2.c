@@ -8,6 +8,9 @@
 #define LEDB_PIN 21
 #define LEDG_PIN 26
 
+// Green LED does 60 cycles in 56 seconds - close enough (7% too fast)
+// Blue LED does 13.5 cycles in 30 seconds - also close enough (9% too slow)
+
 void PIT0_IRQHandler(void);
 void initLEDB(void); 
 void setLEDB(int);
@@ -43,7 +46,7 @@ void PIT0_IRQHandler(void)
 	LEDG_STATUS = ~LEDG_STATUS;
 	setLEDG(LEDG_STATUS);
 	
-	runTimer(0, LEDG_STATUS ? TENTH_SECOND : ONE_SECOND, 1);
+	runTimer(0, LEDG_STATUS ? TENTH_SECOND : ONE_SECOND - TENTH_SECOND, 1);
 }
 
 void initLEDB(void)
