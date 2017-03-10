@@ -3,7 +3,7 @@
 // timer clocks run at 20 MHz
 #define ONE_SECOND 0x01312D00 // ~1 second
 #define TENTH_SECOND 0x001E8480 // ~0.1 seconds
-#define ADD_CYCLES_FIX 5
+#define ADD_CYCLES_FIX 6
 
 #define LEDB_PIN 21
 #define LEDG_PIN 26
@@ -43,7 +43,7 @@ void PIT0_IRQHandler(void)
 	LEDG_STATUS = ~LEDG_STATUS;
 	setLEDG(LEDG_STATUS);
 	
-	runTimer(0, LEDG_STATUS ? TENTH_SECOND : ONE_SECOND-TENTH_SECOND, 1);
+	runTimer(0, LEDG_STATUS ? TENTH_SECOND : ONE_SECOND, 1);
 }
 
 void initLEDB(void)
